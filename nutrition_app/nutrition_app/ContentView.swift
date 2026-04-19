@@ -5,17 +5,20 @@
 //  Created by Edi Zhang on 4/19/26.
 //
 
+// ContentView.swift
+// nutrition_app — Root router
+
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        if hasCompletedOnboarding {
+            SearchView()
+        } else {
+            OnboardingView()
         }
-        .padding()
     }
 }
 
