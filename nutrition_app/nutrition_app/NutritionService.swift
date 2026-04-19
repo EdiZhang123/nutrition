@@ -59,6 +59,7 @@ class NutritionService {
 
     private struct NutritionResponseDTO: Decodable {
         let food: String
+        let summary: String
         let lenses: [LensDTO]
         let alternatives: [String]
 
@@ -71,6 +72,7 @@ class NutritionService {
         func toModel() -> NutritionResponse {
             NutritionResponse(
                 food: food,
+                summary: summary,
                 lenses: lenses.map { LensResult(name: $0.name, verdict: $0.verdict, reason: $0.reason) },
                 alternatives: alternatives
             )
@@ -83,6 +85,7 @@ class NutritionService {
         let mockData: [String: NutritionResponse] = [
             "eggs": NutritionResponse(
                 food: "Eggs",
+                summary: "",
                 lenses: [
                     LensResult(name: "Fat Loss", verdict: "✅", reason: "High protein, moderate calories — keeps you full and supports fat burning."),
                     LensResult(name: "Muscle Gain", verdict: "✅", reason: "Complete protein with all essential amino acids, ideal for muscle synthesis."),
@@ -94,6 +97,7 @@ class NutritionService {
             ),
             "protein bar": NutritionResponse(
                 food: "Protein Bar",
+                summary: "",
                 lenses: [
                     LensResult(name: "Fat Loss", verdict: "⚠️", reason: "Convenient but often high in sugar — check labels and limit to one per day."),
                     LensResult(name: "Muscle Gain", verdict: "✅", reason: "Quick protein fix post-workout, though whole food sources are superior."),
@@ -105,6 +109,7 @@ class NutritionService {
             ),
             "white rice": NutritionResponse(
                 food: "White Rice",
+                summary: "",
                 lenses: [
                     LensResult(name: "Fat Loss", verdict: "⚠️", reason: "High glycemic index spikes blood sugar — pair with protein and vegetables."),
                     LensResult(name: "Muscle Gain", verdict: "✅", reason: "Fast-digesting carbs replenish glycogen quickly after intense training."),
@@ -119,6 +124,7 @@ class NutritionService {
         let key = food.lowercased().trimmingCharacters(in: .whitespaces)
         return mockData[key] ?? NutritionResponse(
             food: food.capitalized,
+            summary: "",
             lenses: [
                 LensResult(name: "Fat Loss", verdict: "⚠️", reason: "Evaluate portion size and macros before including in a fat loss diet."),
                 LensResult(name: "Muscle Gain", verdict: "⚠️", reason: "Assess protein content relative to overall caloric intake for muscle goals."),

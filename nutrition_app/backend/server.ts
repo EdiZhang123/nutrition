@@ -38,6 +38,7 @@ Respond ONLY with a raw JSON object — no markdown, no code fences, no explanat
 Required format (output exactly this structure):
 {
   "food": "Proper Name",
+  "summary": "2-3 sentence plain-English verdict tailored to this user's profile and primary goal.",
   "lenses": [
     { "name": "Fat Loss",            "verdict": "✅", "reason": "max 12 words, direct and specific" },
     { "name": "Muscle Gain",         "verdict": "⚠️", "reason": "max 12 words, direct and specific" },
@@ -49,7 +50,8 @@ Required format (output exactly this structure):
 }
 
 Verdict values (use exactly): ✅ beneficial  ⚠️ moderate  ❌ avoid
-Tailor reasons to the user's profile. Reasons must be under 12 words and specific.`;
+summary: plain English, 2-3 sentences max, reference the user's profile and primary goal.
+Reasons must be under 12 words and specific.`;
 
 // Strip markdown code fences if the model wraps its response despite instructions
 function extractJSON(text: string): string {

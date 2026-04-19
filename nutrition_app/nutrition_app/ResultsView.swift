@@ -51,6 +51,14 @@ struct ResultsView: View {
 
             Divider()
 
+            // Summary paragraph
+            if !response.summary.isEmpty {
+                Text(response.summary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             // Lens cards — stagger in
             VStack(spacing: 10) {
                 ForEach(Array(response.lenses.enumerated()), id: \.element.id) { index, lens in
@@ -83,37 +91,8 @@ struct ResultsView: View {
 
             VStack(spacing: 8) {
                 ForEach(response.alternatives, id: \.self) { alt in
-                    Button {
-                        onAlternativeTap?(alt)
-                    } label: {
-                        HStack(spacing: 12) {
-                            ZStack {
-                                Circle()
-                                    .fill(Color.green.opacity(0.12))
-                                    .frame(width: 36, height: 36)
-                                Image(systemName: "arrow.right")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.green)
-                            }
-                            Text(alt)
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text("Analyze")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.accentColor)
-                            Image(systemName: "chevron.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.accentColor)
-                        }
-                        .padding(.horizontal, 14)
-                        .frame(minHeight: 52)
-                        .background(Color.accentColor.opacity(0.06))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.accentColor.opacity(0.15), lineWidth: 1)
-                        )
+                    Button { onAlternativeTap?(alt) } label: {
+                        alternativeRowLabel(alt: alt)
                     }
                     .buttonStyle(.plain)
                 }
@@ -122,6 +101,37 @@ struct ResultsView: View {
         .padding(16)
         .background(Color(.tertiarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private func alternativeRowLabel(alt: String) -> some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(Color.green.opacity(0.12))
+                    .frame(width: 36, height: 36)
+                Image(systemName: "arrow.right")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.green)
+            }
+            Text(alt)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.primary)
+            Spacer()
+            Text("Analyze")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.accentColor)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.accentColor)
+        }
+        .padding(.horizontal, 14)
+        .frame(minHeight: 52)
+        .background(Color.accentColor.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.accentColor.opacity(0.15), lineWidth: 1)
+        )
     }
 
     // MARK: - Stagger
@@ -204,6 +214,7 @@ struct LensCard: View {
         ResultsView(
             response: NutritionResponse(
                 food: "Eggs",
+                summary: "Eggs are one of the most well-rounded foods you can eat. They score well across nearly every lens, making them a reliable staple whether you're cutting, building muscle, or on a budget.",
                 lenses: [
                     LensResult(name: "Fat Loss",             verdict: "✅", reason: "High protein, moderate calories — keeps you full and supports fat burning."),
                     LensResult(name: "Muscle Gain",          verdict: "✅", reason: "Complete protein with all essential amino acids, ideal for muscle synthesis."),

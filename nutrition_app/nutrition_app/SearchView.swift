@@ -93,6 +93,7 @@ struct SearchView: View {
                     analyzeFood(food)
                 }
             )
+            .id(response.id)
             .transition(.asymmetric(
                 insertion: .opacity.combined(with: .move(edge: .bottom)),
                 removal: .opacity

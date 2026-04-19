@@ -34,6 +34,7 @@ enum HealthGoal: String, CaseIterable, Identifiable {
 struct NutritionResponse: Identifiable {
     var id = UUID()
     var food: String
+    var summary: String
     var lenses: [LensResult]
     var alternatives: [String]
 }
