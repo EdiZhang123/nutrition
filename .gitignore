@@ -22,3 +22,6 @@ DerivedData/
 
 # Build artifacts
 nutrition_app/Products/
+.DS_Store
+**/xcuserdata/
+*.xcuserstate
