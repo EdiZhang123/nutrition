@@ -146,7 +146,7 @@ struct SearchView: View {
         result = nil
 
         Task {
-            let response = await NutritionService.shared.analyze(food: foodQuery, goal: selectedGoal.rawValue)
+            let response = await NutritionService.shared.analyze(food: foodQuery, goal: selectedGoal.rawValue, profile: userProfile)
             await MainActor.run {
                 withAnimation {
                     result = response
