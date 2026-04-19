@@ -1,10 +1,11 @@
 # API keys — never commit
-nutrition_app/backend/.env
+.env
+backend/.env
 
 # Node
-nutrition_app/backend/node_modules/
-nutrition_app/backend/dist/
-nutrition_app/backend/package-lock.json
+backend/node_modules/
+backend/dist/
+backend/package-lock.json
 
 # macOS
 .DS_Store

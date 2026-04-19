@@ -70,7 +70,7 @@ app.post("/analyze", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "food and goal are required" });
   }
 
-  const cacheKey = food.toLowerCase().trim();
+  const cacheKey = `${food.toLowerCase().trim()}::${goal}`;
 
   if (cache.has(cacheKey)) {
     console.log(`[cache hit]  ${cacheKey}`);
