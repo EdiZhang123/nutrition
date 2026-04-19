@@ -32,7 +32,7 @@ class NutritionService {
         let body = AnalyzeRequestBody(
             food: food,
             goal: goal,
-            profile: profile ?? UserProfile(ageRange: "", height: "", weight: "", lifestyle: "", healthGoal: "")
+            profile: profile ?? UserProfile(ageRange: "", sex: "", height: "", weight: "", lifestyle: "", healthGoal: "")
         )
 
         guard let encoded = try? JSONEncoder().encode(body) else { return nil }

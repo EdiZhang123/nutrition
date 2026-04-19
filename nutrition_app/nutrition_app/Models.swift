@@ -5,6 +5,7 @@ import Foundation
 
 struct UserProfile: Codable {
     var ageRange: String
+    var sex: String
     var height: String
     var weight: String
     var lifestyle: String

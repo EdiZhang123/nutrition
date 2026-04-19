@@ -8,6 +8,7 @@ struct OnboardingView: View {
     @AppStorage("userProfileData") private var userProfileData = Data()
 
     @State private var ageRange = ""
+    @State private var sex = ""
     @State private var heightFt = 5
     @State private var heightIn = 8
     @State private var weightLbs = 150
@@ -106,6 +107,33 @@ struct OnboardingView: View {
     private var statsStep: some View {
         VStack(alignment: .leading, spacing: 28) {
             stepHeader(title: "Your body stats", subtitle: "Step 2 of 4 — Used to estimate your nutritional needs")
+
+            // Sex
+            VStack(alignment: .leading, spacing: 8) {
+                Text("SEX")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .kerning(1)
+
+                HStack(spacing: 10) {
+                    ForEach(["Male", "Female", "Prefer not to say"], id: \.self) { option in
+                        Button {
+                            sex = option
+                        } label: {
+                            Text(option)
+                                .font(.subheadline)
+                                .fontWeight(sex == option ? .semibold : .regular)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
+                                .background(sex == option ? Color.accentColor : Color(.secondarySystemBackground))
+                                .foregroundStyle(sex == option ? .white : .primary)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
 
             // Height
             VStack(alignment: .leading, spacing: 8) {
@@ -235,7 +263,7 @@ struct OnboardingView: View {
     private var currentStepIsEmpty: Bool {
         switch currentStep {
         case 0: return ageRange.isEmpty
-        case 1: return false // wheel pickers always have a value
+        case 1: return sex.isEmpty
         case 2: return lifestyle.isEmpty
         case 3: return healthGoal.isEmpty
         default: return false
@@ -245,6 +273,7 @@ struct OnboardingView: View {
     private func saveAndFinish() {
         let profile = UserProfile(
             ageRange: ageRange,
+            sex: sex,
             height: "\(heightFt)'\(heightIn)\"",
             weight: "\(weightLbs)",
             lifestyle: lifestyle,

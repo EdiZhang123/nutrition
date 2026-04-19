@@ -14,6 +14,7 @@ const client = new Anthropic();
 
 interface UserProfile {
   ageRange: string;
+  sex: string;      // e.g. "Male", "Female", "Prefer not to say"
   height: string;   // e.g. "5'10\""
   weight: string;   // e.g. "165"
   lifestyle: string;
@@ -80,7 +81,8 @@ app.post("/analyze", async (req: Request, res: Response) => {
   }
 
   // Compact profile string — minimizes tokens while preserving all context
-  const profileLine = `age=${profile.ageRange}, ht=${profile.height}, wt=${profile.weight}lb, lifestyle=${profile.lifestyle}, goal=${profile.healthGoal}`;
+  const sexPart = profile.sex && profile.sex !== "Prefer not to say" ? `, sex=${profile.sex}` : "";
+  const profileLine = `age=${profile.ageRange}${sexPart}, ht=${profile.height}, wt=${profile.weight}lb, lifestyle=${profile.lifestyle}, goal=${profile.healthGoal}`;
 
   const userMessage =
     `Analyze "${food}".\n` +
