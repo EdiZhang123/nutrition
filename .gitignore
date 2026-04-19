@@ -1,0 +1,24 @@
+# API keys — never commit
+backend/.env
+
+# Node
+backend/node_modules/
+backend/dist/
+backend/package-lock.json
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Xcode
+*.xcuserstate
+xcuserdata/
+nutrition_app/nutrition_app.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Build artifacts
+nutrition_app/Products/

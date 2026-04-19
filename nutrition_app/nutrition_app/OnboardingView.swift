@@ -8,8 +8,9 @@ struct OnboardingView: View {
     @AppStorage("userProfileData") private var userProfileData = Data()
 
     @State private var ageRange = ""
-    @State private var height = ""
-    @State private var weight = ""
+    @State private var heightFt = 5
+    @State private var heightIn = 8
+    @State private var weightLbs = 150
     @State private var lifestyle = ""
     @State private var healthGoal = ""
     @State private var currentStep = 0
@@ -103,14 +104,96 @@ struct OnboardingView: View {
     }
 
     private var statsStep: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 28) {
             stepHeader(title: "Your body stats", subtitle: "Step 2 of 4 — Used to estimate your nutritional needs")
-            VStack(spacing: 12) {
-                TextField("Height (e.g. 5'10\")", text: $height)
-                    .textFieldStyle(.roundedBorder)
-                TextField("Weight (lbs)", text: $weight)
-                    .textFieldStyle(.roundedBorder)
-                    .keyboardType(.numberPad)
+
+            // Height
+            VStack(alignment: .leading, spacing: 8) {
+                Text("HEIGHT")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .kerning(1)
+
+                ZStack {
+                    // Selection band
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(.tertiarySystemBackground))
+                        .frame(height: 44)
+
+                    HStack(spacing: 0) {
+                        Picker("Feet", selection: $heightFt) {
+                            ForEach(4...7, id: \.self) { ft in
+                                Text("\(ft) ft")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                                    .tag(ft)
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .frame(maxWidth: .infinity)
+                        .clipped()
+
+                        Picker("Inches", selection: $heightIn) {
+                            ForEach(0...11, id: \.self) { inch in
+                                Text("\(inch) in")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                                    .tag(inch)
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .frame(maxWidth: .infinity)
+                        .clipped()
+                    }
+                }
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .frame(height: 180)
+            }
+
+            // Weight
+            VStack(alignment: .leading, spacing: 8) {
+                Text("WEIGHT")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .kerning(1)
+
+                VStack(spacing: 16) {
+                    // Current value display
+                    HStack(alignment: .lastTextBaseline, spacing: 4) {
+                        Text("\(weightLbs)")
+                            .font(.system(size: 52, weight: .bold, design: .rounded))
+                            .contentTransition(.numericText())
+                            .animation(.snappy, value: weightLbs)
+                        Text("lbs")
+                            .font(.title3)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+
+                    // Slider
+                    VStack(spacing: 6) {
+                        Slider(value: Binding(
+                            get: { Double(weightLbs) },
+                            set: { weightLbs = Int($0) }
+                        ), in: 80...400, step: 1)
+                        .tint(.accentColor)
+
+                        HStack {
+                            Text("80")
+                            Spacer()
+                            Text("400")
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                    }
+                }
+                .padding(20)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
             }
         }
     }
@@ -152,7 +235,7 @@ struct OnboardingView: View {
     private var currentStepIsEmpty: Bool {
         switch currentStep {
         case 0: return ageRange.isEmpty
-        case 1: return height.isEmpty || weight.isEmpty
+        case 1: return false // wheel pickers always have a value
         case 2: return lifestyle.isEmpty
         case 3: return healthGoal.isEmpty
         default: return false
@@ -162,8 +245,8 @@ struct OnboardingView: View {
     private func saveAndFinish() {
         let profile = UserProfile(
             ageRange: ageRange,
-            height: height,
-            weight: weight,
+            height: "\(heightFt)'\(heightIn)\"",
+            weight: "\(weightLbs)",
             lifestyle: lifestyle,
             healthGoal: healthGoal
         )
@@ -209,6 +292,56 @@ struct SelectionRow: View {
     }
 }
 
-#Preview {
+#Preview("Step 1 — Age") {
     OnboardingView()
+}
+
+#Preview("Step 2 — Height & Weight") {
+    // Show the pickers directly for quick review
+    ScrollView {
+        VStack(alignment: .leading, spacing: 28) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Your body stats")
+                    .font(.title2).fontWeight(.semibold)
+                Text("Step 2 of 4 — Used to estimate your nutritional needs")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("HEIGHT").font(.caption).fontWeight(.semibold).foregroundStyle(.secondary).kerning(1)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8).fill(Color(.tertiarySystemBackground)).frame(height: 44)
+                    HStack(spacing: 0) {
+                        Picker("Feet", selection: .constant(5)) {
+                            ForEach(4...7, id: \.self) { ft in Text("\(ft) ft").font(.title3).fontWeight(.medium).tag(ft) }
+                        }.pickerStyle(.wheel).frame(maxWidth: .infinity).clipped()
+                        Picker("Inches", selection: .constant(8)) {
+                            ForEach(0...11, id: \.self) { inch in Text("\(inch) in").font(.title3).fontWeight(.medium).tag(inch) }
+                        }.pickerStyle(.wheel).frame(maxWidth: .infinity).clipped()
+                    }
+                }
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .frame(height: 180)
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("WEIGHT").font(.caption).fontWeight(.semibold).foregroundStyle(.secondary).kerning(1)
+                VStack(spacing: 16) {
+                    HStack(alignment: .lastTextBaseline, spacing: 4) {
+                        Text("150").font(.system(size: 52, weight: .bold, design: .rounded))
+                        Text("lbs").font(.title3).fontWeight(.medium).foregroundStyle(.secondary)
+                    }.frame(maxWidth: .infinity)
+                    VStack(spacing: 6) {
+                        Slider(value: .constant(150), in: 80...400, step: 1).tint(.accentColor)
+                        HStack { Text("80"); Spacer(); Text("400") }.font(.caption).foregroundStyle(.tertiary)
+                    }
+                }
+                .padding(20)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+        }
+        .padding()
+    }
 }
